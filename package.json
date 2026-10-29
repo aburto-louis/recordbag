@@ -1,0 +1,28 @@
+{
+  "name": "recordbag",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.4.4",
+  "workspaces": [
+    "client",
+    "server",
+    "store"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "bun run --cwd server start",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "clean": "turbo run clean && rm -rf node_modules .turbo"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.4",
+    "turbo": "^2.11.10",
+    "typescript": "^7.0.2"
+  }
+}
