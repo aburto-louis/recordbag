@@ -2,10 +2,14 @@ import { Hono } from "hono"
 import { HTTPException } from "hono/http-exception"
 import { prettifyError, ZodError } from "zod"
 import { toHttpError } from "./db/errors"
+import auth from "./api/auth"
+import users from "./api/users"
 
 const app = new Hono()
 
-  // Mount API routes.
+  .route("auth", auth)
+
+  .route("users", users)
 
   .onError((err, c) => {
     if (err instanceof HTTPException) {

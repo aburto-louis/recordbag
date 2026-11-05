@@ -10,33 +10,93 @@
 
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as IndexRouteImport } from "./routes/index"
+import { Route as AuthRouteImport } from "./routes/_auth"
+import { Route as AuthAlbumsRouteImport } from "./routes/_auth/albums"
+import { Route as AuthArtistsRouteImport } from "./routes/_auth/artists"
+import { Route as AuthLabelsRouteImport } from "./routes/_auth/labels"
+import { Route as AuthMixesRouteImport } from "./routes/_auth/mixes"
+import { Route as AuthSongsRouteImport } from "./routes/_auth/songs"
 
 const IndexRoute = IndexRouteImport.update({
   id: "/",
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: "/_auth",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthAlbumsRoute = AuthAlbumsRouteImport.update({
+  id: "/albums",
+  path: "/albums",
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthArtistsRoute = AuthArtistsRouteImport.update({
+  id: "/artists",
+  path: "/artists",
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthLabelsRoute = AuthLabelsRouteImport.update({
+  id: "/labels",
+  path: "/labels",
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthMixesRoute = AuthMixesRouteImport.update({
+  id: "/mixes",
+  path: "/mixes",
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSongsRoute = AuthSongsRouteImport.update({
+  id: "/songs",
+  path: "/songs",
+  getParentRoute: () => AuthRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
+  "/albums": typeof AuthAlbumsRoute
+  "/artists": typeof AuthArtistsRoute
+  "/labels": typeof AuthLabelsRoute
+  "/mixes": typeof AuthMixesRoute
+  "/songs": typeof AuthSongsRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
+  "/albums": typeof AuthAlbumsRoute
+  "/artists": typeof AuthArtistsRoute
+  "/labels": typeof AuthLabelsRoute
+  "/mixes": typeof AuthMixesRoute
+  "/songs": typeof AuthSongsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   "/": typeof IndexRoute
+  "/_auth": typeof AuthRouteWithChildren
+  "/_auth/albums": typeof AuthAlbumsRoute
+  "/_auth/artists": typeof AuthArtistsRoute
+  "/_auth/labels": typeof AuthLabelsRoute
+  "/_auth/mixes": typeof AuthMixesRoute
+  "/_auth/songs": typeof AuthSongsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/"
+  fullPaths: "/" | "/albums" | "/artists" | "/labels" | "/mixes" | "/songs"
   fileRoutesByTo: FileRoutesByTo
-  to: "/"
-  id: "__root__" | "/"
+  to: "/" | "/albums" | "/artists" | "/labels" | "/mixes" | "/songs"
+  id:
+    | "__root__"
+    | "/"
+    | "/_auth"
+    | "/_auth/albums"
+    | "/_auth/artists"
+    | "/_auth/labels"
+    | "/_auth/mixes"
+    | "/_auth/songs"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
 }
 
 declare module "@tanstack/react-router" {
@@ -48,11 +108,72 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/_auth": {
+      id: "/_auth"
+      path: ""
+      fullPath: "/"
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/_auth/albums": {
+      id: "/_auth/albums"
+      path: "/albums"
+      fullPath: "/albums"
+      preLoaderRoute: typeof AuthAlbumsRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    "/_auth/artists": {
+      id: "/_auth/artists"
+      path: "/artists"
+      fullPath: "/artists"
+      preLoaderRoute: typeof AuthArtistsRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    "/_auth/labels": {
+      id: "/_auth/labels"
+      path: "/labels"
+      fullPath: "/labels"
+      preLoaderRoute: typeof AuthLabelsRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    "/_auth/mixes": {
+      id: "/_auth/mixes"
+      path: "/mixes"
+      fullPath: "/mixes"
+      preLoaderRoute: typeof AuthMixesRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    "/_auth/songs": {
+      id: "/_auth/songs"
+      path: "/songs"
+      fullPath: "/songs"
+      preLoaderRoute: typeof AuthSongsRouteImport
+      parentRoute: typeof AuthRoute
+    }
   }
 }
 
+interface AuthRouteChildren {
+  AuthAlbumsRoute: typeof AuthAlbumsRoute
+  AuthArtistsRoute: typeof AuthArtistsRoute
+  AuthLabelsRoute: typeof AuthLabelsRoute
+  AuthMixesRoute: typeof AuthMixesRoute
+  AuthSongsRoute: typeof AuthSongsRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthAlbumsRoute: AuthAlbumsRoute,
+  AuthArtistsRoute: AuthArtistsRoute,
+  AuthLabelsRoute: AuthLabelsRoute,
+  AuthMixesRoute: AuthMixesRoute,
+  AuthSongsRoute: AuthSongsRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
